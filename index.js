@@ -1,9 +1,11 @@
+
 const express = require('express')
 const uuid = require('uuid')
 const app = express()
-const port = 3000
+const port = 3001
+let cors = require('cors')
 app.use(express.json())
-
+app.use(cors())
 
 const users = []
 const checkUserId = (req, res, next) => {
@@ -29,14 +31,17 @@ app.get('/users', (req, res) => {
 })
 
 app.post('/users', (req, res) => {
+    
+        const { name, age } = req.body
 
-    const { name, age } = req.body
+        if (age < 18) throw new Error("Somente maiores de 18 anos")
 
-    const user = { id: uuid.v4(), name, age }
+            const user = { id: uuid.v4(), name, age }
 
-    users.push(user)
+        users.push(user)
 
-    return res.status(201).json(user)
+        return res.status(201).json(user)
+
 
 })
 
@@ -59,7 +64,7 @@ app.delete('/users/:id', (req, res) => {
 
     users.splice(index, 1)
 
-    return res.json().status(204)
+    return res.status(204).json()
 })
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+app.listen(port, () => console.log(`Back-end app listening on port ${port}!`))
